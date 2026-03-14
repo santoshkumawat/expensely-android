@@ -1,0 +1,22 @@
+# Build outputs
+/build
+.gradle/
+
+# Local properties (has your SDK path)
+local.properties
+
+# IDE files
+.idea/
+*.iml
+
+# APK/AAB — share via GitHub Releases instead
+*.apk
+*.aab
+*.dm
+
+# Keystore — NEVER commit
+*.jks
+*.keystore
+
+# Baseline profiles
+app/release/
