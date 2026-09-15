@@ -24,10 +24,16 @@ public class MainActivity extends AppCompatActivity {
 
         webView = findViewById(R.id.webview);
         WebSettings settings = webView.getSettings();
+
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
+
+        // Marks this WebView as the Expensely v2.0 Android app.
+        settings.setUserAgentString(
+                settings.getUserAgentString() + " ExpenselyApp/2.0"
+        );
 
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl("https://expensely-app.netlify.app");
