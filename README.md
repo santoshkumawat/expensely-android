@@ -30,7 +30,7 @@ No local config needed: the target URL is hardcoded in `MainActivity`, and all a
 MainActivity → WebView → https://expensely-app.netlify.app → backend API
 ```
 
-There's no native networking, storage, or business logic in this repo — the WebView delegates entirely to the deployed React frontend, which talks to the [backend](https://github.com/santoshkumawat/expensely-backend) exactly as it does in a desktop browser (JWT stored in the WebView's local storage, same REST calls).
+There's no native networking, storage, or business logic in this repo — the WebView delegates entirely to the deployed Next.js frontend, which talks to the [backend](https://github.com/santoshkumawat/expensely-backend) exactly as it does in a desktop browser (JWT stored in the WebView's local storage, same REST calls).
 
 ## Possible next steps
 
