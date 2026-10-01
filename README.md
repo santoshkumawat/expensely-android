@@ -9,7 +9,7 @@ Native Android shell for Expensely, an expense-tracking app. `v2.0` wraps the li
 
 ✅ Released — `v2.0`. A single `MainActivity` hosts a full-screen `WebView` pointed at `https://expensely-app.netlify.app`, with JS and DOM storage enabled, wide-viewport rendering, and the device back button mapped to the WebView's own navigation history (falling back to closing the app). The WebView identifies itself with `ExpenselyApp/2.0` appended to its user agent.
 
-A built release APK is checked into this repo at `app/release/expensely-v2.0.apk`.
+The release APK (`expensely-v2.0.apk`) is built locally under `app/release/` and is git-ignored — build it from source with Android Studio or `./gradlew assembleRelease`.
 
 ## Stack
 

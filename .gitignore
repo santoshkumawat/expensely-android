@@ -1,6 +1,9 @@
 # Build outputs
-/build
+build/
 .gradle/
+.cxx/
+.externalNativeBuild/
+captures/
 
 # Local properties (has your SDK path)
 local.properties
@@ -18,5 +21,9 @@ local.properties
 *.jks
 *.keystore
 
-# Baseline profiles
+# Local release artifacts (APKs are built locally, not committed)
 app/release/
+
+# OS files
+.DS_Store
+Thumbs.db
