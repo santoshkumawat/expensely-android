@@ -7,7 +7,6 @@ The Android app for **Expensely**, a personal expense and income tracker. It is 
 | Frontend | [expensely-frontend](https://github.com/santoshkumawat/expensely-frontend) | Next.js web app, deployed on Netlify — [expensely-app.netlify.app](https://expensely-app.netlify.app) |
 | Backend | [expensely-backend](https://github.com/santoshkumawat/expensely-backend) | Spring Boot REST API + MongoDB, deployed on Render |
 | **Android (this repo)** | [expensely-android](https://github.com/santoshkumawat/expensely-android) | WebView shell that loads the web app |
-| System design (private) | [expensely-system-design](https://github.com/santoshkumawat/expensely-system-design) | Architecture and design docs |
 
 ```
 Android app (WebView)  ──▶  Next.js web app (Netlify)  ──▶  REST API /api (Render)  ──▶  MongoDB
@@ -30,26 +29,26 @@ There is no networking, storage or business logic in this repo. Sign-in, data an
 
 ## Expensely features
 
-On Android you get all of these through the web app. The table shows which repo builds each piece.
+On Android you get all of these through the web app.
 
-| Area | Feature | What you get | Android (this repo) | Frontend | Backend |
-|---|---|---|---|---|---|
-| **Accounts** | Sign up / sign in | Email-OTP registration, JWT login, forgot / reset password | shows the web app | `login`, `register`, `AuthContext` | `/api/auth/*` |
-| | Profile | Edit name and username, change email and password | shows the web app | `profile` page | `/api/user/*` |
-| | Demo account | A read-only tour | shows the web app | "Try demo" | `DemoReadOnlyFilter` |
-| **Money** | Expenses & income | Add / edit / delete; category decides expense or income | shows the web app | `ExpenseModal`, `ExpenseList` | `/api/expenses` |
-| | Recurring records | One gen date, due date, amount → 12 months | shows the web app | `ExpenseModal` | 12 monthly entries |
-| | Payment status & paid date | UPCOMING → PENDING → PAID, "Paid on …" | shows the web app | `ExpenseList` | `ExpenseService` |
-| | All-time search | Whole words or word starts, across every year | shows the web app | Expenses search | `/api/expenses/search` |
-| **Overview** | Home & Quick Stats | Balance, Your Money cards with sparklines, Quick Stats, Due Soon | shows the web app | `Dashboard` | `/api/expenses` |
-| | Hide amounts | An eye button hides every rupee amount | shows the web app | `AmountsToggle` | — |
-| | Report | Month / year breakdown, income vs expenses | shows the web app | `AnalyticsView` | `/api/expenses` data |
-| | Excel export | Monthly / yearly `.xlsx` | saved to Downloads through the file bridge | export button | `/api/expenses/export/*` |
-| **Reminders** | Payment reminder emails | Due-date emails; mark the payment paid in the app | shows the web app | profile toggle | `ReminderService` |
-| **Personal** | Themes | 26 themes × light / dark, saved per account | shows the web app | `ThemeContext` | `/api/user/preferences` |
-| **Privacy** | Encryption at rest | Description and amount encrypted before storage | — | — | `CryptoService` |
-| **Admin** | Admin panel & site analytics | Stats, categories, users, anonymous analytics | shows the web app | `admin` page | `/api/admin/*` |
-| **Mobile** | **The Android app** | Installable app, full-screen, back button, skips the landing page | **this repo** | `isAndroidApp()` | — |
+| Area | Feature | What you get | Android (this repo) | Frontend |
+|---|---|---|---|---|
+| **Accounts** | Sign up / sign in | Email-OTP registration, JWT login, forgot / reset password | shows the web app | `login`, `register`, `AuthContext` |
+| | Profile | Edit name and username, change email and password | shows the web app | `profile` page |
+| | Demo account | A read-only tour | shows the web app | "Try demo" |
+| **Money** | Expenses & income | Add / edit / delete; category decides expense or income | shows the web app | `ExpenseModal`, `ExpenseList` |
+| | Recurring records | One gen date, due date, amount → 12 months | shows the web app | `ExpenseModal` |
+| | Payment status & paid date | UPCOMING → PENDING → PAID, "Paid on …" | shows the web app | `ExpenseList` |
+| | All-time search | Whole words or word starts, across every year | shows the web app | Expenses search |
+| **Overview** | Home & Quick Stats | Balance, Your Money cards with sparklines, Quick Stats, Due Soon | shows the web app | `Dashboard` |
+| | Hide amounts | An eye button hides every rupee amount | shows the web app | `AmountsToggle` |
+| | Report | Month / year breakdown, income vs expenses | shows the web app | `AnalyticsView` |
+| | Excel export | Monthly / yearly `.xlsx` | saved to Downloads through the file bridge | export button |
+| **Reminders** | Payment reminder emails | Due-date emails; mark the payment paid in the app | shows the web app | profile toggle |
+| **Personal** | Themes | 26 themes × light / dark, saved per account | shows the web app | `ThemeContext` |
+| **Privacy** | Encryption at rest | Description and amount encrypted before storage | — | — |
+| **Admin** | Admin panel & site analytics | Stats, categories, users, anonymous analytics | shows the web app | `admin` page |
+| **Mobile** | **The Android app** | Installable app, full-screen, back button, skips the landing page | **this repo** | `isAndroidApp()` |
 
 ---
 
@@ -88,13 +87,13 @@ To try a local frontend and backend inside the emulator:
 1. Run the backend ([backend README](https://github.com/santoshkumawat/expensely-backend#readme)) and the frontend ([frontend README](https://github.com/santoshkumawat/expensely-frontend#readme)) on your computer. In the emulator your computer is `10.0.2.2`, not `localhost`.
 2. Frontend: set `NEXT_PUBLIC_API_URL=http://10.0.2.2:8080/api` in `.env.local` and restart `npm run dev`.
 3. Backend: add `http://10.0.2.2:3000` to the CORS allow-list in `config/SecurityConfig.java`.
-4. Android: change the URL in `MainActivity` to `http://10.0.2.2:3000` and allow plain HTTP for debug builds (`android:usesCleartextTraffic="true"` on `<application>`). Don't ship either change.
+4. Android: change `START_URL` in `MainActivity` to `http://10.0.2.2:3000` (the app only opens pages from that address) and allow plain HTTP for debug builds (`android:usesCleartextTraffic="true"` on `<application>`). Don't ship either change.
 
 ---
 
 ## How the Android app connects to the other projects
 
-- **Frontend.** `MainActivity` loads `https://expensely-app.netlify.app` and appends `ExpenselyApp/2.0` to the WebView's user agent. The frontend's `src/lib/platform.js` (`isAndroidApp()`) reads that to skip the landing page and go straight to login inside the app.
+- **Frontend.** `MainActivity` loads `START_URL` (`https://expensely-app.netlify.app`) and appends `ExpenselyApp/2.0` to the WebView's user agent. The frontend's `src/lib/platform.js` (`isAndroidApp()`) reads that to skip the landing page and go straight to login inside the app.
 - **Backend.** No direct connection. The web app inside the WebView calls the REST API the same way it does in a browser.
 - **Updates.** Because the UI is the deployed web app, every frontend and backend release reaches Android users immediately, without a new APK. A new APK is only needed when this shell itself changes.
 
@@ -107,6 +106,7 @@ Everything the shell adds is in `MainActivity`:
 - Full-screen `WebView` with JavaScript and DOM storage enabled (needed for the login token) and wide-viewport rendering.
 - The device **back button** goes back through the WebView's own history, and closes the app when there is nowhere left to go.
 - The `ExpenselyApp/2.0` user-agent marker described above.
+- **Only the Expensely site loads inside the app.** Links to any other address open in the phone's browser, so no outside page can run inside the WebView or reach the file bridge below.
 - A **file bridge** (`window.ExpenselyAndroid.saveFile(name, mimeType, base64)`): the web app's Excel export hands the file here, because a WebView ignores download links. On Android 10+ it is saved to the Downloads folder (no permission needed); on Android 9 and older it opens the share sheet through a `FileProvider`.
 - App icon (adaptive, with a monochrome variant), `Material3` day / night theme without an action bar, and the `INTERNET` permission.
 

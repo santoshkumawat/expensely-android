@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -27,6 +28,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
+
+    /** The only address that loads inside the app. */
+    private static final String START_URL = "https://expensely-app.netlify.app";
+    private static final String APP_HOST = Uri.parse(START_URL).getHost();
 
     private WebView webView;
 
@@ -56,8 +61,27 @@ public class MainActivity extends AppCompatActivity {
         // so the web app hands the file to this bridge instead.
         webView.addJavascriptInterface(new FileBridge(), "ExpenselyAndroid");
 
-        webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("https://expensely-app.netlify.app");
+        webView.setWebViewClient(new WebViewClient() {
+            // Keep outside pages out of the WebView: they could call the file bridge.
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri uri = request.getUrl();
+                if (APP_HOST != null && APP_HOST.equalsIgnoreCase(uri.getHost())) {
+                    return false;                       // our own site: load it here
+                }
+                String scheme = uri.getScheme();
+                if ("http".equals(scheme) || "https".equals(scheme)
+                        || "mailto".equals(scheme) || "tel".equals(scheme)) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                    } catch (Exception ignored) {
+                        // no app can open it: just do nothing
+                    }
+                }
+                return true;                            // never load it in the WebView
+            }
+        });
+        webView.loadUrl(START_URL);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
