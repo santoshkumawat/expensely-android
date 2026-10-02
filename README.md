@@ -45,7 +45,7 @@ On Android you get all of these through the web app. The table shows which repo 
 | | Hide amounts | An eye button hides every rupee amount | shows the web app | `AmountsToggle` | — |
 | | Report | Month / year breakdown, income vs expenses | shows the web app | `AnalyticsView` | `/api/expenses` data |
 | | Excel export | Monthly / yearly `.xlsx` | saved to Downloads through the file bridge | export button | `/api/expenses/export/*` |
-| **Reminders** | Payment reminder emails | Due-date emails with a "Mark as paid" link | links open in the phone's browser | `/mark-paid` page | `ReminderService` |
+| **Reminders** | Payment reminder emails | Due-date emails; mark the payment paid in the app | shows the web app | profile toggle | `ReminderService` |
 | **Personal** | Themes | 26 themes × light / dark, saved per account | shows the web app | `ThemeContext` | `/api/user/preferences` |
 | **Privacy** | Encryption at rest | Description and amount encrypted before storage | — | — | `CryptoService` |
 | **Admin** | Admin panel & site analytics | Stats, categories, users, anonymous analytics | shows the web app | `admin` page | `/api/admin/*` |
