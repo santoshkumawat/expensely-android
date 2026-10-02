@@ -16,6 +16,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.core.view.WindowCompat;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /** Android 10+: the shared Downloads folder, no storage permission needed. */
+        @RequiresApi(Build.VERSION_CODES.Q)
         private void saveToDownloads(String name, String mime, byte[] bytes) throws IOException {
             ContentResolver resolver = getContentResolver();
             ContentValues values = new ContentValues();
