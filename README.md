@@ -44,7 +44,7 @@ On Android you get all of these through the web app. The table shows which repo 
 | **Overview** | Home & Quick Stats | Balance, Your Money cards with sparklines, Quick Stats, Due Soon | shows the web app | `Dashboard` | `/api/expenses` |
 | | Hide amounts | An eye button hides every rupee amount | shows the web app | `AmountsToggle` | — |
 | | Report | Month / year breakdown, income vs expenses | shows the web app | `AnalyticsView` | `/api/expenses` data |
-| | Excel export | Monthly / yearly `.xlsx` | see [Known limits](#known-limits-and-next-steps) | export button | `/api/expenses/export/*` |
+| | Excel export | Monthly / yearly `.xlsx` | saved to Downloads through the file bridge | export button | `/api/expenses/export/*` |
 | **Reminders** | Payment reminder emails | Due-date emails with a "Mark as paid" link | links open in the phone's browser | `/mark-paid` page | `ReminderService` |
 | **Personal** | Themes | 26 themes × light / dark, saved per account | shows the web app | `ThemeContext` | `/api/user/preferences` |
 | **Privacy** | Encryption at rest | Description and amount encrypted before storage | — | — | `CryptoService` |
@@ -107,13 +107,13 @@ Everything the shell adds is in `MainActivity`:
 - Full-screen `WebView` with JavaScript and DOM storage enabled (needed for the login token) and wide-viewport rendering.
 - The device **back button** goes back through the WebView's own history, and closes the app when there is nowhere left to go.
 - The `ExpenselyApp/2.0` user-agent marker described above.
+- A **file bridge** (`window.ExpenselyAndroid.saveFile(name, mimeType, base64)`): the web app's Excel export hands the file here, because a WebView ignores download links. On Android 10+ it is saved to the Downloads folder (no permission needed); on Android 9 and older it opens the share sheet through a `FileProvider`.
 - App icon (adaptive, with a monochrome variant), `Material3` day / night theme without an action bar, and the `INTERNET` permission.
 
 ---
 
 ## Known limits and next steps
 
-- **File downloads.** The WebView has no download handler, so the Excel export (a file download) may not save inside the app. Handling it needs a `DownloadListener` in `MainActivity` (or opening the link in the system browser).
 - **Notifications.** Payment reminders are sent by email; a WebView cannot receive native push notifications.
 - **Hardcoded URL.** Move the address into a build-config value so debug builds can point at a local frontend without editing code.
 - **Native screens.** If WebView performance or offline support ever matters, the busiest screens (Home, Expenses) are the candidates for native rewrites.
