@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -33,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     /** The only address that loads inside the app. */
     private static final String START_URL = "https://expensely-app.netlify.app";
     private static final String APP_HOST = Uri.parse(START_URL).getHost();
+
+    /** Bundled page shown instead of the system "Web page not available" error. */
+    private static final String OFFLINE_URL = "file:///android_asset/offline.html";
 
     private WebView webView;
 
@@ -63,6 +67,14 @@ public class MainActivity extends AppCompatActivity {
         webView.addJavascriptInterface(new FileBridge(), "ExpenselyAndroid");
 
         webView.setWebViewClient(new WebViewClient() {
+            // The page itself failed to load (no internet, DNS failure...): show our own page.
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request.isForMainFrame()) {
+                    view.loadUrl(OFFLINE_URL);
+                }
+            }
+
             // Keep outside pages out of the WebView: they could call the file bridge.
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -87,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (webView.canGoBack()) {
+                // From the offline page there is nothing useful behind it: leave the app.
+                if (webView.canGoBack() && !OFFLINE_URL.equals(webView.getUrl())) {
                     webView.goBack();
                 } else {
                     finish();

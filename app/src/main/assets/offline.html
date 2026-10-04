@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expensely — Offline</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px; box-sizing: border-box; text-align: center; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #F6F7F9; color: #1B2340; }
+  .card { max-width: 340px; }
+  .icon { width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 18px; background: #E8F1E6; color: #4E8A47;
+    display: flex; align-items: center; justify-content: center; }
+  h1 { font-size: 20px; margin: 0 0 8px; }
+  p { font-size: 14px; line-height: 1.5; margin: 0 0 20px; color: #6B7280; }
+  button { border: none; border-radius: 12px; padding: 12px 24px; font-size: 14px; font-weight: 700;
+    background: #4E8A47; color: #fff; cursor: pointer; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #12151C; color: #F3F4F6; }
+    .icon { background: #232836; }
+    p { color: #9CA3AF; }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16.2a5 5 0 0 1 7 0"/><path d="M12 20h.01"/><path d="M3 3l18 18"/>
+      </svg>
+    </div>
+    <h1>You're offline</h1>
+    <p>Expensely needs an internet connection to load your data. Check your connection and try again.</p>
+    <button onclick="retry()">Try again</button>
+  </div>
+  <script>
+    var SITE = 'https://expensely-app.netlify.app';
+    function retry() { location.href = SITE; }
+    window.addEventListener('online', retry);
+  </script>
+</body>
+</html>
