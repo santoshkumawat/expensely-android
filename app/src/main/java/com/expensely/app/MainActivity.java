@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
 
-        // Marks this WebView as the Expensely v2.1 Android app.
+        // Marks this WebView as the Expensely v2.2 Android app.
         settings.setUserAgentString(
-                settings.getUserAgentString() + " ExpenselyApp/2.1"
+                settings.getUserAgentString() + " ExpenselyApp/2.2"
         );
 
         // File downloads (the Excel export): a WebView ignores download links,
