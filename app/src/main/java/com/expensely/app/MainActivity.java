@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
         });
         webView.loadUrl(START_URL);
 
+        new UpdateChecker(this).check();
+
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

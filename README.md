@@ -108,7 +108,9 @@ Everything the shell adds is in `MainActivity`:
 - The `ExpenselyApp/2.2` user-agent marker described above.
 - **Only the Expensely site loads inside the app.** Links to any other address open in the phone's browser, so no outside page can run inside the WebView or reach the file bridge below.
 - A **file bridge** (`window.ExpenselyAndroid.saveFile(name, mimeType, base64)`): the web app's Excel export hands the file here, because a WebView ignores download links. On Android 10+ it is saved to the Downloads folder (no permission needed); on Android 9 and older it opens the share sheet through a `FileProvider`.
-- App icon (adaptive, with a monochrome variant), `Material3` day / night theme without an action bar, and the `INTERNET` permission.
+- An **offline page**: when the site can't load, a bundled `offline.html` (in `assets/`) replaces the system "Web page not available" error.
+- **In-app updates** (`UpdateChecker`): on launch the app reads `https://expensely-app.netlify.app/app-version.json` from the frontend. If its `versionCode` is higher than the installed one, an **Update** dialog downloads the APK inside the app and opens the system installer. The APK URL must be `https://github.com/santoshkumawat/expensely-android/releases/download/...`; anything else is ignored. The first time, Android asks you to allow installs from Expensely. To ship a release, publish the APK on GitHub, then raise `versionCode`, `versionName`, `apkUrl` and `notes` in the frontend's `public/app-version.json`.
+- App icon (adaptive, with a monochrome variant), `Material3` day / night theme without an action bar, and the `INTERNET` and `REQUEST_INSTALL_PACKAGES` permissions.
 
 ---
 

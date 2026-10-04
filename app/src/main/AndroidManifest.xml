@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- In-app updates: lets the app open the system installer for the downloaded APK -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -21,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Lets the app hand a saved report to other apps (Android 9 and older) -->
+        <!-- Lets the app hand a saved report (Android 9 and older) or a downloaded update to other apps -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
