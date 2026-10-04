@@ -76,9 +76,9 @@ The app opens **https://expensely-app.netlify.app**, so it works as soon as it l
 
 ### Release builds
 
-A release APK must be signed. Use Android Studio → **Build → Generate Signed App Bundle / APK** with your release keystore. Keep the keystore and its passwords **outside the repository** and never commit them. The built APK (`app/release/expensely-v2.1.apk`) is git-ignored.
+A release APK must be signed. Use Android Studio → **Build → Generate Signed App Bundle / APK** with your release keystore. Keep the keystore and its passwords **outside the repository** and never commit them. The built APK (`app/release/expensely-v2.2.apk`) is git-ignored.
 
-Current release: **v2.1** (`versionCode` 3, `versionName` 2.1, application id `com.expensely.app`).
+Current release: **v2.2** (`versionCode` 4, `versionName` 2.2, application id `com.expensely.app`).
 
 ### Testing against local servers (optional)
 
@@ -93,7 +93,7 @@ To try a local frontend and backend inside the emulator:
 
 ## How the Android app connects to the other projects
 
-- **Frontend.** `MainActivity` loads `START_URL` (`https://expensely-app.netlify.app`) and appends `ExpenselyApp/2.1` to the WebView's user agent. The frontend's `src/lib/platform.js` (`isAndroidApp()`) reads that to skip the landing page and go straight to login inside the app.
+- **Frontend.** `MainActivity` loads `START_URL` (`https://expensely-app.netlify.app`) and appends `ExpenselyApp/2.2` to the WebView's user agent. The frontend's `src/lib/platform.js` (`isAndroidApp()`) reads that to skip the landing page and go straight to login inside the app.
 - **Backend.** No direct connection. The web app inside the WebView calls the REST API the same way it does in a browser.
 - **Updates.** Because the UI is the deployed web app, every frontend and backend release reaches Android users immediately, without a new APK. A new APK is only needed when this shell itself changes.
 
@@ -105,7 +105,7 @@ Everything the shell adds is in `MainActivity`:
 
 - Full-screen `WebView` with JavaScript and DOM storage enabled (needed for the login token) and wide-viewport rendering.
 - The device **back button** goes back through the WebView's own history, and closes the app when there is nowhere left to go.
-- The `ExpenselyApp/2.1` user-agent marker described above.
+- The `ExpenselyApp/2.2` user-agent marker described above.
 - **Only the Expensely site loads inside the app.** Links to any other address open in the phone's browser, so no outside page can run inside the WebView or reach the file bridge below.
 - A **file bridge** (`window.ExpenselyAndroid.saveFile(name, mimeType, base64)`): the web app's Excel export hands the file here, because a WebView ignores download links. On Android 10+ it is saved to the Downloads folder (no permission needed); on Android 9 and older it opens the share sheet through a `FileProvider`.
 - App icon (adaptive, with a monochrome variant), `Material3` day / night theme without an action bar, and the `INTERNET` permission.
