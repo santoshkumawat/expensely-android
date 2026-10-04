@@ -1,15 +1,12 @@
 package com.expensely.app;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.view.Gravity;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +25,7 @@ import java.net.URL;
 
 /**
  * Checks the web app's /app-version.json on launch. When it lists a newer
- * versionCode than the installed one, offers an Update button that downloads
+ * versionCode than the installed one, shows an Update banner at the top of the app that downloads
  * the APK inside the app and hands it to the system installer.
  */
 class UpdateChecker {
@@ -57,8 +54,7 @@ class UpdateChecker {
                 if (!isTrustedApkUrl(apkUrl)) return;
 
                 String name = json.optString("versionName", String.valueOf(latest));
-                String notes = json.optString("notes", "");
-                activity.runOnUiThread(() -> showUpdateDialog(name, notes, apkUrl));
+                                activity.runOnUiThread(() -> showUpdateBanner(name, apkUrl));
             } catch (Exception ignored) {
                 // no update info: carry on
             }
@@ -96,19 +92,21 @@ class UpdateChecker {
         }
     }
 
-    private void showUpdateDialog(String versionName, String notes, String apkUrl) {
+    /** A slim bar above the app instead of a popup: it never blocks the screen. */
+    private void showUpdateBanner(String versionName, String apkUrl) {
         if (activity.isFinishing()) return;
-        String message = "Expensely v" + versionName + " is available."
-                + (notes.isEmpty() ? "" : "\n\n" + notes);
-        new AlertDialog.Builder(activity)
-                .setTitle("Update available")
-                .setMessage(message)
-                .setPositiveButton("Update", (d, w) -> startUpdate(apkUrl))
-                .setNegativeButton("Later", null)
-                .show();
+        View banner = activity.findViewById(R.id.update_banner);
+        TextView text = activity.findViewById(R.id.update_banner_text);
+        TextView action = activity.findViewById(R.id.update_banner_action);
+        View close = activity.findViewById(R.id.update_banner_close);
+
+        text.setText("Expensely v" + versionName + " is available");
+        action.setOnClickListener(v -> startUpdate(apkUrl, banner, text, action, close));
+        close.setOnClickListener(v -> banner.setVisibility(View.GONE));
+        banner.setVisibility(View.VISIBLE);
     }
 
-    private void startUpdate(String apkUrl) {
+    private void startUpdate(String apkUrl, View banner, TextView text, TextView action, View close) {
         if (downloading) return;
 
         // Android 8+: the user must allow this app to install packages (one-time)
@@ -122,45 +120,35 @@ class UpdateChecker {
         }
 
         downloading = true;
-        ProgressBar bar = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
-        bar.setMax(100);
-        TextView label = new TextView(activity);
-        label.setText("Downloading update…");
-        label.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        LinearLayout box = new LinearLayout(activity);
-        box.setOrientation(LinearLayout.VERTICAL);
-        int pad = (int) (24 * activity.getResources().getDisplayMetrics().density);
-        box.setPadding(pad, pad, pad, pad / 2);
-        box.addView(label);
-        box.addView(bar);
-
-        AlertDialog dialog = new AlertDialog.Builder(activity)
-                .setTitle("Updating Expensely")
-                .setView(box)
-                .setCancelable(false)
-                .show();
+        String original = text.getText().toString();
+        text.setText("Downloading update…");
+        action.setVisibility(View.GONE);
+        close.setVisibility(View.GONE);
 
         new Thread(() -> {
             try {
-                File apk = download(apkUrl, percent -> activity.runOnUiThread(() -> {
-                    bar.setProgress(percent);
-                    label.setText("Downloading update… " + percent + "%");
-                }));
+                File apk = download(apkUrl, percent -> activity.runOnUiThread(
+                        () -> text.setText("Downloading update… " + percent + "%")));
                 activity.runOnUiThread(() -> {
-                    dialog.dismiss();
                     downloading = false;
+                    resetBanner(text, original, action, close);
                     install(apk);
                 });
             } catch (Exception e) {
                 activity.runOnUiThread(() -> {
-                    dialog.dismiss();
                     downloading = false;
+                    resetBanner(text, original, action, close);
                     Toast.makeText(activity, "Update download failed. Check your connection and try again.",
                             Toast.LENGTH_LONG).show();
                 });
             }
         }).start();
+    }
+
+    private static void resetBanner(TextView text, String original, View action, View close) {
+        text.setText(original);
+        action.setVisibility(View.VISIBLE);
+        close.setVisibility(View.VISIBLE);
     }
 
     private interface Progress { void onPercent(int percent); }

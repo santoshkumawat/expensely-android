@@ -3,6 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- Update banner at the top of the app -->
+    <color name="banner_bg">#FF4E8A47</color>
+
     <!-- Home screen widget (dark variants in values-night/colors.xml) -->
     <color name="widget_bg">#FFFFFFFF</color>
     <color name="widget_text">#FF1B2340</color>
