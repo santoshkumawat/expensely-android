@@ -11,6 +11,8 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import androidx.core.content.ContextCompat;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,7 +34,9 @@ public class ExpenseWidgetProvider extends AppWidgetProvider {
     private static final String MASK = "₹ ••••";
 
     private static final int[] ROWS = {R.id.widget_row1, R.id.widget_row2, R.id.widget_row3};
+    private static final int[] ROW_DOTS = {R.id.widget_row1_dot, R.id.widget_row2_dot, R.id.widget_row3_dot};
     private static final int[] ROW_NAMES = {R.id.widget_row1_name, R.id.widget_row2_name, R.id.widget_row3_name};
+    private static final int[] ROW_INFOS = {R.id.widget_row1_info, R.id.widget_row2_info, R.id.widget_row3_info};
     private static final int[] ROW_AMOUNTS = {R.id.widget_row1_amount, R.id.widget_row2_amount, R.id.widget_row3_amount};
 
     @Override
@@ -82,6 +86,8 @@ public class ExpenseWidgetProvider extends AppWidgetProvider {
 
         for (int row : ROWS) views.setViewVisibility(row, View.GONE);
         views.setTextViewText(R.id.widget_updated, "");
+        views.setViewVisibility(R.id.widget_dues_label, View.GONE);
+        views.setViewVisibility(R.id.widget_dues, View.GONE);
 
         JSONObject data = null;
         try {
@@ -107,9 +113,11 @@ public class ExpenseWidgetProvider extends AppWidgetProvider {
 
         long updated = data.optLong("updated", 0);
         if (updated > 0) {
-            views.setTextViewText(R.id.widget_updated, DateUtils.getRelativeTimeSpanString(
-                    updated, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
-                    DateUtils.FORMAT_ABBREV_RELATIVE));
+            long age = System.currentTimeMillis() - updated;
+            views.setTextViewText(R.id.widget_updated, age < DateUtils.MINUTE_IN_MILLIS
+                    ? "Just now"
+                    : DateUtils.getRelativeTimeSpanString(updated, System.currentTimeMillis(),
+                            DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE));
         }
 
         JSONArray dues = data.optJSONArray("dues");
@@ -117,17 +125,26 @@ public class ExpenseWidgetProvider extends AppWidgetProvider {
         for (int i = 0; i < shown; i++) {
             JSONObject due = dues.optJSONObject(i);
             if (due == null) continue;
-            String name = due.optString("name", "") + " · " + due.optString("info", "");
-            views.setTextViewText(ROW_NAMES[i], name);
+            boolean overdue = due.optBoolean("overdue", false);
+            int tone = ContextCompat.getColor(context,
+                    overdue ? R.color.widget_overdue : R.color.widget_accent);
+            views.setTextViewText(ROW_NAMES[i], due.optString("name", ""));
+            views.setTextViewText(ROW_INFOS[i], due.optString("info", ""));
+            views.setTextColor(ROW_DOTS[i], tone);
+            views.setTextColor(ROW_INFOS[i],
+                    overdue ? tone : ContextCompat.getColor(context, R.color.widget_muted));
             views.setTextViewText(ROW_AMOUNTS[i], money(due.optDouble("amount", 0), hidden));
             views.setViewVisibility(ROWS[i], View.VISIBLE);
         }
 
+        views.setViewVisibility(R.id.widget_dues_label, View.VISIBLE);
         if (shown == 0) {
             views.setTextViewText(R.id.widget_empty, "Nothing due this month — you're all caught up");
             views.setViewVisibility(R.id.widget_empty, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_dues, View.GONE);
         } else {
             views.setViewVisibility(R.id.widget_empty, View.GONE);
+            views.setViewVisibility(R.id.widget_dues, View.VISIBLE);
         }
         return views;
     }

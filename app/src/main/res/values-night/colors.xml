@@ -4,5 +4,7 @@
     <color name="widget_text">#FFF3F4F6</color>
     <color name="widget_muted">#FF9CA3AF</color>
     <color name="widget_accent">#FF7BC47F</color>
+    <color name="widget_tile">#FF252B3A</color>
+    <color name="widget_tile_accent">#FF22352A</color>
     <color name="widget_overdue">#FFFF7A7A</color>
 </resources>

@@ -11,5 +11,7 @@
     <color name="widget_text">#FF1B2340</color>
     <color name="widget_muted">#FF6B7280</color>
     <color name="widget_accent">#FF4E8A47</color>
+    <color name="widget_tile">#FFF1F3F7</color>
+    <color name="widget_tile_accent">#FFE8F1E6</color>
     <color name="widget_overdue">#FFD64545</color>
 </resources>
