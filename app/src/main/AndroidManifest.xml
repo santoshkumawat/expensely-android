@@ -23,6 +23,18 @@
             </intent-filter>
         </activity>
 
+        <!-- Home screen widget: this month's spend and next dues -->
+        <receiver
+            android:name=".ExpenseWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/expense_widget_info" />
+        </receiver>
+
         <!-- Lets the app hand a saved report (Android 9 and older) or a downloaded update to other apps -->
         <provider
             android:name="androidx.core.content.FileProvider"

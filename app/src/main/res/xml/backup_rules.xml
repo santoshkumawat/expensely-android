@@ -10,4 +10,6 @@
    <include domain="sharedpref" path="."/>
    <exclude domain="sharedpref" path="device.xml"/>
 -->
+    <!-- The widget's saved month summary is money data: keep it out of backups -->
+    <exclude domain="sharedpref" path="expensely_widget.xml"/>
 </full-backup-content>

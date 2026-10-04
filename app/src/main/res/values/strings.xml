@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Expensely</string>
+    <string name="widget_description">This month\'s spend and your next dues at a glance</string>
 </resources>

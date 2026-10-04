@@ -9,7 +9,11 @@
         <include .../>
         <exclude .../>
         -->
+        <exclude domain="sharedpref" path="expensely_widget.xml"/>
     </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="expensely_widget.xml"/>
+    </device-transfer>
     <!--
     <device-transfer>
         <include .../>

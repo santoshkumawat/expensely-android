@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
 
-        // Marks this WebView as the Expensely v2.2 Android app.
+        // Marks this WebView as the Expensely v2.3 Android app.
         settings.setUserAgentString(
-                settings.getUserAgentString() + " ExpenselyApp/2.2"
+                settings.getUserAgentString() + " ExpenselyApp/2.3"
         );
 
         // File downloads (the Excel export): a WebView ignores download links,
@@ -129,6 +129,18 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 toast("Could not save the file");
             }
+        }
+
+        /** Home screen widget: the web app sends this month's summary as JSON. */
+        @JavascriptInterface
+        public void updateWidget(String json) {
+            ExpenseWidgetProvider.save(getApplicationContext(), json);
+        }
+
+        /** Called on logout so the widget stops showing the previous user's numbers. */
+        @JavascriptInterface
+        public void clearWidget() {
+            ExpenseWidgetProvider.clear(getApplicationContext());
         }
 
         /** Android 10+: the shared Downloads folder, no storage permission needed. */
