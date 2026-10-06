@@ -38,6 +38,7 @@ On Android you get all of these through the web app.
 | | Demo account | A read-only tour | shows the web app | "Try demo" |
 | **Money** | Expenses & income | Add / edit / delete; category decides expense or income | shows the web app | `ExpenseModal`, `ExpenseList` |
 | | Recurring records | One gen date, due date, amount → 12 months | shows the web app | `ExpenseModal` |
+| | Credit cards | Say which card an expense went on and see this month's total for each card; the card bill is not counted as spending twice, and you can check a bill against what you recorded | shows the web app | Expenses, Profile |
 | | Payment status & paid date | UPCOMING → PENDING → PAID, "Paid on …" | shows the web app | `ExpenseList` |
 | | All-time search | Whole words or word starts, across every year | shows the web app | Expenses search |
 | **Overview** | Home & Quick Stats | Balance, Your Money cards with sparklines, Quick Stats, Due Soon | shows the web app | `Dashboard` |
