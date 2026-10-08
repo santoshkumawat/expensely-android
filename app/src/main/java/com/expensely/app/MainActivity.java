@@ -40,6 +40,35 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView webView;
 
+    /**
+     * Where to go for a launch or a new intent. A plain launch opens the site.
+     * expensely://add?description=...&amount=...&date=... opens the add-expense
+     * form pre-filled; only those three fields are passed on, URL-encoded, and
+     * the web app checks them again. The person still has to press Save.
+     */
+    private static String urlFor(Intent intent) {
+        Uri data = intent == null ? null : intent.getData();
+        if (data == null || !"expensely".equals(data.getScheme()) || !"add".equals(data.getHost())) {
+            return START_URL;
+        }
+        Uri.Builder url = Uri.parse(START_URL).buildUpon()
+                .appendPath("expenses")
+                .appendQueryParameter("add", "1");
+        for (String key : new String[] {"description", "amount", "date"}) {
+            String value = data.getQueryParameter(key);
+            if (value != null && !value.isEmpty()) url.appendQueryParameter(key, value);
+        }
+        return url.build().toString();
+    }
+
+    /** Already open (singleTask): a new expensely://add link arrives here. */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        webView.loadUrl(urlFor(intent));
+    }
+
     @Override
     @SuppressLint("SetJavaScriptEnabled")
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;                            // never load it in the WebView
             }
         });
-        webView.loadUrl(START_URL);
+        webView.loadUrl(urlFor(getIntent()));
 
         new UpdateChecker(this).check();
 

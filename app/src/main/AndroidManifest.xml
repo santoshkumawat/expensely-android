@@ -15,11 +15,23 @@
         android:theme="@style/Theme.Expensely">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- expensely://add?description=Nainital%20trip&amount=2500&date=2026-10-08
+                 Opens the add-expense form pre-filled (used by Splitely's "Add to Expensely") -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="expensely" android:host="add" />
             </intent-filter>
         </activity>
 
