@@ -94,7 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;                            // never load it in the WebView
             }
         });
-        webView.loadUrl(START_URL);
+        // Opened by an expensely://add link (e.g. from Splitely): show the add form, pre-filled by the web app.
+        // Only on a fresh start: after a rotation or a restart from recent apps the same intent comes back.
+        String addUrl = savedInstanceState == null ? addLinkUrl(getIntent()) : null;
+        webView.loadUrl(addUrl != null ? addUrl : START_URL);
 
         new UpdateChecker(this).check();
 
@@ -109,6 +112,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /** An expensely://add link tapped while the app is already running. */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String addUrl = addLinkUrl(intent);
+        if (addUrl != null) {
+            webView.loadUrl(addUrl);
+        }
+    }
+
+    /**
+     * @return the web page that shows the pre-filled add form for an expensely://add intent, or
+     *     null if this is not one (or it was relaunched from recent apps).
+     */
+    private static String addLinkUrl(Intent intent) {
+        if (intent == null
+                || !Intent.ACTION_VIEW.equals(intent.getAction())
+                || intent.getData() == null
+                || (intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
+            return null;
+        }
+        AddLink link = AddLink.parse(intent.getData().toString());
+        return link == null ? null : link.webUrl();
     }
 
     /** Receives a file from the web page and saves it where the user can find it. */

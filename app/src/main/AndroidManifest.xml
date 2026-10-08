@@ -13,13 +13,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Expensely">
+        <!-- singleTask: an expensely://add link tapped while the app is open reuses this activity -->
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- expensely://add?description=...&amount=...&date=... : other apps (Splitely) open the
+                 add-expense form pre-filled. The web app reads the values; nothing is saved without Save. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="expensely"
+                    android:host="add" />
             </intent-filter>
         </activity>
 
